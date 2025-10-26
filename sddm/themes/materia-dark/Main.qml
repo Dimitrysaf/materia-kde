@@ -243,7 +243,8 @@ Rectangle {
                         height: 144
                         fillMode: Image.PreserveAspectCrop
                         layer.enabled: true
-                        layer.effect: OpacityMask {
+                        layer.effect: MultiEffect {
+                            maskEnabled: true
                             maskSource: mask
                         }
                         source: "/var/lib/AccountsService/icons/" + user.currentText

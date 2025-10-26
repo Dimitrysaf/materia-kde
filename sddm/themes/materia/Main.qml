@@ -203,7 +203,7 @@ Rectangle {
             Material.accent: "#1a73e8"
             background: Rectangle {
                 color: Material.dialogColor
-                radius: 10
+                radius: 2
             }
             Overlay.modal: Rectangle {
                 color: "transparent"
@@ -239,7 +239,7 @@ Rectangle {
                         id: mask
                         width: parent.width
                         height: parent.height
-                        radius: 100
+                        radius: 20
                         visible: false
                     }
                 }
@@ -291,7 +291,7 @@ Rectangle {
                         color: Material.dialogColor
                         border.width: 1
                         border.color: Material.dividerColor
-                        radius: 10
+                        radius: 2
                     }
                 }
 
@@ -423,7 +423,7 @@ Rectangle {
                         color: Material.dialogColor
                         border.width: 1
                         border.color: Material.dividerColor
-                        radius: 10
+                        radius: 2
                     }
                 }
 
@@ -441,7 +441,7 @@ Rectangle {
                     highlighted: true
                     background: Rectangle {
                         color: login.down ? Qt.darker(Material.accentColor, 1.2) : Material.accentColor
-                        radius: 10
+                        radius: 2
                     }
                 }
             }

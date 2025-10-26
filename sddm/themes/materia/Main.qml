@@ -15,7 +15,6 @@ Rectangle {
         id: textConstants
     }
 
-    // hack for disable autostart QtQuick.VirtualKeyboard
     Loader {
         id: inputPanel
         property bool keyboardActive: false
@@ -32,7 +31,6 @@ Rectangle {
             password.placeholderTextColor = "#f44336"
             password.text = ""
             password.focus = true
-            errorMsgContainer.visible = true
         }
     }
 
@@ -72,7 +70,6 @@ Rectangle {
         anchors.topMargin: 5
 
         Item {
-
             Image {
                 id: shutdown
                 height: 22
@@ -85,8 +82,7 @@ Rectangle {
                     hoverEnabled: true
                     onEntered: {
                         shutdown.source = "images/system-shutdown-hover.svg"
-                        var component = Qt.createComponent(
-                                    "components/ShutdownToolTip.qml")
+                        var component = Qt.createComponent("components/ShutdownToolTip.qml")
                         if (component.status === Component.Ready) {
                             var tooltip = component.createObject(shutdown)
                             tooltip.x = -100
@@ -113,7 +109,6 @@ Rectangle {
         anchors.topMargin: 5
 
         Item {
-
             Image {
                 id: reboot
                 height: 22
@@ -126,8 +121,7 @@ Rectangle {
                     hoverEnabled: true
                     onEntered: {
                         reboot.source = "images/system-reboot-hover.svg"
-                        var component = Qt.createComponent(
-                                    "components/RebootToolTip.qml")
+                        var component = Qt.createComponent("components/RebootToolTip.qml")
                         if (component.status === Component.Ready) {
                             var tooltip = component.createObject(reboot)
                             tooltip.x = -100
@@ -168,6 +162,7 @@ Rectangle {
             timelb.text = Qt.formatDateTime(new Date(), "HH:mm")
         }
     }
+
     Row {
         anchors.top: parent.top
         anchors.right: parent.right
@@ -214,51 +209,46 @@ Rectangle {
                 color: "transparent"
             }
 
-            Grid {
-                columns: 1
+            Column {
                 spacing: 10
-                verticalItemAlignment: Grid.AlignVCenter
-                horizontalItemAlignment: Grid.AlignHCenter
+                anchors.centerIn: parent
 
-                Column {
-                    spacing: 0
+                Image {
+                    id: ava
+                    width: 144
+                    height: 144
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    fillMode: Image.PreserveAspectCrop
+                    layer.enabled: true
+                    layer.effect: MultiEffect {
+                        maskEnabled: true
+                        maskSource: mask
+                        shadowEnabled: true
+                        shadowHorizontalOffset: 0
+                        shadowVerticalOffset: 3
+                        shadowBlur: 0.45
+                        shadowColor: "#50000000"
+                    }
+                    source: "/var/lib/AccountsService/icons/" + user.currentText
+                    onStatusChanged: {
+                        if (status == Image.Error)
+                            return source = "images/.face.icon"
+                    }
 
-                    Image {
-                        id: ava
-                        width: 144
-                        height: 144
-                        fillMode: Image.PreserveAspectCrop
-                        layer.enabled: true
-                        layer.effect: MultiEffect {
-                            maskEnabled: true
-                            maskSource: mask
-                            shadowEnabled: true
-                            shadowHorizontalOffset: 0
-                            shadowVerticalOffset: 3
-                            shadowBlur: 0.45
-                            shadowColor: "#50000000"
-                        }
-                        source: "/var/lib/AccountsService/icons/" + user.currentText
-                        onStatusChanged: {
-                            if (status == Image.Error)
-                                return source = "images/.face.icon"
-                        }
-
-                        Rectangle {
-                            id: mask
-                            width: parent.width
-                            height: parent.height
-                            radius: 100
-                            visible: false
-                        }
+                    Rectangle {
+                        id: mask
+                        width: parent.width
+                        height: parent.height
+                        radius: 100
+                        visible: false
                     }
                 }
 
-                // Custom ComboBox for hack colors on DropDownMenu
                 ComboBox {
                     id: user
                     height: 50
                     width: height * 7
+                    anchors.horizontalCenter: parent.horizontalCenter
                     model: userModel
                     textRole: "name"
                     currentIndex: userModel.lastIndex
@@ -267,8 +257,7 @@ Rectangle {
                         Material.theme: Material.Light
                         Material.accent: "#1a73e8"
                         width: ulistview.width
-                        text: user.textRole ? (Array.isArray(
-                                                   user.model) ? modelData[user.textRole] : model[user.textRole]) : modelData
+                        text: user.textRole ? (Array.isArray(user.model) ? modelData[user.textRole] : model[user.textRole]) : modelData
                         Material.foreground: user.currentIndex === index ? ulistview.contentItem.Material.accent : ulistview.contentItem.Material.foreground
                         highlighted: user.highlightedIndex === index
                         hoverEnabled: user.hoverEnabled
@@ -310,10 +299,19 @@ Rectangle {
                     id: password
                     height: 50
                     width: height * 7
+                    anchors.horizontalCenter: parent.horizontalCenter
                     echoMode: TextInput.Password
                     focus: true
                     placeholderText: textConstants.password
                     onAccepted: sddm.login(user.currentText, password.text, session.currentIndex)
+                    
+                    Keys.onPressed: {
+                        if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+                            sddm.login(user.currentText, password.text, session.currentIndex)
+                            event.accepted = true
+                        }
+                    }
+                    
                     background: Rectangle {
                         color: "transparent"
                         Rectangle {
@@ -323,6 +321,7 @@ Rectangle {
                             color: password.activeFocus ? Material.accentColor : Material.dividerColor
                         }
                     }
+                    
                     Image {
                         id: caps
                         width: 24
@@ -362,10 +361,9 @@ Rectangle {
                                     property: "opacity"
                                     from: 0
                                     to: 1
-                                    duration: imageFadeIn
+                                    duration: 200
                                 }
                             },
-
                             Transition {
                                 to: ""
                                 NumberAnimation {
@@ -373,27 +371,18 @@ Rectangle {
                                     property: "opacity"
                                     from: 1
                                     to: 0
-                                    duration: imageFadeOut
+                                    duration: 200
                                 }
                             }
                         ]
                     }
                 }
 
-                Keys.onPressed: {
-                    if (event.key === Qt.Key_Return
-                            || event.key === Qt.Key_Enter) {
-                        sddm.login(user.currentText, password.text,
-                                   session.currentIndex)
-                        event.accepted = true
-                    }
-                }
-
-                // Custom ComboBox for hack colors on DropDownMenu
                 ComboBox {
                     id: session
                     height: 50
                     width: height * 7
+                    anchors.horizontalCenter: parent.horizontalCenter
                     model: sessionModel
                     textRole: "name"
                     currentIndex: sessionModel.lastIndex
@@ -402,8 +391,7 @@ Rectangle {
                         Material.theme: Material.Light
                         Material.accent: "#1a73e8"
                         width: slistview.width
-                        text: session.textRole ? (Array.isArray(
-                                                      session.model) ? modelData[session.textRole] : model[session.textRole]) : modelData
+                        text: session.textRole ? (Array.isArray(session.model) ? modelData[session.textRole] : model[session.textRole]) : modelData
                         Material.foreground: session.currentIndex === index ? slistview.contentItem.Material.accent : slistview.contentItem.Material.foreground
                         highlighted: session.highlightedIndex === index
                         hoverEnabled: session.hoverEnabled
@@ -431,7 +419,6 @@ Rectangle {
                             delegate: session.delegate
                         }
                     }
-
                     background: Rectangle {
                         color: Material.dialogColor
                         border.width: 1
@@ -442,16 +429,15 @@ Rectangle {
 
                 Button {
                     id: login
-
                     height: 50
                     width: height * 7
+                    anchors.horizontalCenter: parent.horizontalCenter
                     icon.source: "images/login.svg"
                     icon.width: 24
                     icon.height: 24
                     text: textConstants.login
                     font.bold: true
-                    onClicked: sddm.login(user.currentText, password.text,
-                                          session.currentIndex)
+                    onClicked: sddm.login(user.currentText, password.text, session.currentIndex)
                     highlighted: true
                     background: Rectangle {
                         color: login.down ? Qt.darker(Material.accentColor, 1.2) : Material.accentColor

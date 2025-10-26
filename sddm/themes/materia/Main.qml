@@ -227,7 +227,6 @@ Rectangle {
                         id: ava
                         width: 144
                         height: 144
-                        Layout.alignment: Qt.AlignHCenter
                         fillMode: Image.PreserveAspectCrop
                         layer.enabled: true
                         layer.effect: MultiEffect {

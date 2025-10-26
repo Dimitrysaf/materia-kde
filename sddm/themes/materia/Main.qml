@@ -55,14 +55,14 @@ Rectangle {
         anchors.top: parent.top
     }
 
-    DropShadow {
-        anchors.fill: panel
-        horizontalOffset: 0
-        verticalOffset: 3
-        radius: 8.0
-        samples: 17
-        color: "#70000000"
+    MultiEffect {
         source: panel
+        anchors.fill: panel
+        shadowEnabled: true
+        shadowHorizontalOffset: 0
+        shadowVerticalOffset: 3
+        shadowBlur: 0.4
+        shadowColor: "#70000000"
     }
 
     Row {

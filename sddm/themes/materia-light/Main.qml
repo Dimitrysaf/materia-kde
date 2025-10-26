@@ -224,16 +224,16 @@ Rectangle {
                             visible: false
                         }
 
-                        DropShadow {
+                        MultiEffect {
+                            source: mask
                             anchors.fill: mask
                             width: mask.width
                             height: mask.height
-                            horizontalOffset: 0
-                            verticalOffset: 3
-                            radius: 9.0
-                            samples: 15
-                            color: "#60000000"
-                            source: mask
+                            shadowEnabled: true
+                            shadowHorizontalOffset: 0
+                            shadowVerticalOffset: 3
+                            shadowBlur: 0.45
+                            shadowColor: "#60000000"
                         }
                     }
 

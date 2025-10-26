@@ -1,5 +1,5 @@
 import QtQuick 6.0
-import QtGraphicalEffects 6.0
+import QtQuick.Effects
 
 Rectangle {
     color:"transparent"
@@ -16,13 +16,13 @@ Rectangle {
         verticalAlignment: Text.AlignVCenter
         horizontalAlignment: Text.AlignHCenter
     }
-    DropShadow {
-        anchors.fill: parent
-        horizontalOffset: 1
-        verticalOffset: 1
-        radius: 2.0
-        samples: 4
-        color: "#60000000"
+    MultiEffect {
         source: text
+        anchors.fill: parent
+        shadowEnabled: true
+        shadowHorizontalOffset: 1
+        shadowVerticalOffset: 1
+        shadowBlur: 0.1
+        shadowColor: "#60000000"
     }
 }

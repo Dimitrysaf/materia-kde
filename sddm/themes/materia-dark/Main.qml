@@ -206,6 +206,10 @@ Rectangle {
             visible: true
             Material.theme: Material.Dark
             Material.accent: "#8ab4f8"
+            background: Rectangle {
+                color: Material.dialogColor
+                radius: 0
+            }
 
             Grid {
                 columns: 1
@@ -299,6 +303,12 @@ Rectangle {
                             delegate: user.delegate
                         }
                     }
+                    background: Rectangle {
+                        color: Material.dialogColor
+                        border.width: 1
+                        border.color: Material.dividerColor
+                        radius: 0
+                    }
                 }
 
                 TextField {
@@ -308,8 +318,16 @@ Rectangle {
                     echoMode: TextInput.Password
                     focus: true
                     placeholderText: textConstants.password
-                    onAccepted: sddm.login(user.currentText, password.text,
-                                           session.currentIndex)
+                    onAccepted: sddm.login(user.currentText, password.text, session.currentIndex)
+                    background: Rectangle {
+                        color: "transparent"
+                        Rectangle {
+                            width: parent.width
+                            height: 1
+                            anchors.bottom: parent.bottom
+                            color: password.activeFocus ? Material.accentColor : Material.dividerColor
+                        }
+                    }
                     Image {
                         id: caps
                         width: 24
@@ -433,6 +451,10 @@ Rectangle {
                     onClicked: sddm.login(user.currentText, password.text,
                                           session.currentIndex)
                     highlighted: true
+                    background: Rectangle {
+                        color: login.down ? Qt.darker(Material.accentColor, 1.2) : Material.accentColor
+                        radius: 0
+                    }
                 }
             }
         }

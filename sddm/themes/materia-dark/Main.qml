@@ -436,6 +436,13 @@ Rectangle {
                             delegate: session.delegate
                         }
                     }
+
+                    background: Rectangle {
+                        color: Material.dialogColor
+                        border.width: 1
+                        border.color: Material.dividerColor
+                        radius: 0
+                    }
                 }
 
                 Button {

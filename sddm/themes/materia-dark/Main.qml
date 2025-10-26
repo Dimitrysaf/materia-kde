@@ -210,6 +210,9 @@ Rectangle {
                 color: Material.dialogColor
                 radius: 0
             }
+            Overlay.modal: Rectangle {
+                color: "transparent"
+            }
 
             Grid {
                 columns: 1

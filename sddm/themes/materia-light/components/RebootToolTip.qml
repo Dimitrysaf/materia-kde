@@ -1,5 +1,5 @@
-import QtQuick 2.8
-import QtGraphicalEffects 1.0
+import QtQuick 6.0
+import QtGraphicalEffects 6.0
 
 Rectangle {
     color:"transparent"

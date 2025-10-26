@@ -1,6 +1,6 @@
 import QtQuick 6.0
 import QtQuick.Controls 6.0
-import QtGraphicalEffects 6.0
+import QtQuick.Effects
 import QtQuick.Controls.Material 6.0
 import "components"
 

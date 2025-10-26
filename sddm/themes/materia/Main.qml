@@ -221,28 +221,8 @@ Rectangle {
                 horizontalItemAlignment: Grid.AlignHCenter
 
                 Column {
-                    Item {
-
-                        Rectangle {
-                            id: mask
-                            width: 144
-                            height: 144
-                            radius: 100
-                            visible: false
-                        }
-
-                        MultiEffect {
-                            source: mask
-                            anchors.fill: mask
-                            width: mask.width
-                            height: mask.height
-                            shadowEnabled: true
-                            shadowHorizontalOffset: 0
-                            shadowVerticalOffset: 3
-                            shadowBlur: 0.45
-                            shadowColor: "#60000000"
-                        }
-                    }
+                    spacing: 0
+                    horizontalItemAlignment: Qt.AlignHCenter
 
                     Image {
                         id: ava
@@ -253,11 +233,24 @@ Rectangle {
                         layer.effect: MultiEffect {
                             maskEnabled: true
                             maskSource: mask
+                            shadowEnabled: true
+                            shadowHorizontalOffset: 0
+                            shadowVerticalOffset: 3
+                            shadowBlur: 0.45
+                            shadowColor: "#50000000"
                         }
                         source: "/var/lib/AccountsService/icons/" + user.currentText
                         onStatusChanged: {
                             if (status == Image.Error)
                                 return source = "images/.face.icon"
+                        }
+
+                        Rectangle {
+                            id: mask
+                            width: parent.width
+                            height: parent.height
+                            radius: 100
+                            visible: false
                         }
                     }
                 }

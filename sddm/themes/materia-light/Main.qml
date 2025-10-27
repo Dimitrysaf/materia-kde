@@ -15,6 +15,7 @@ Rectangle {
         id: textConstants
     }
 
+    // hack for disable autostart QtQuick.VirtualKeyboard
     Loader {
         id: inputPanel
         property bool keyboardActive: false
@@ -23,10 +24,10 @@ Rectangle {
 
     Connections {
         target: sddm
-        onLoginSucceeded: {
+        function onLoginSucceeded() {
 
         }
-        onLoginFailed: {
+        function onLoginFailed() {
             password.placeholderText = textConstants.loginFailed
             password.placeholderTextColor = "#f44336"
             password.text = ""
@@ -46,7 +47,7 @@ Rectangle {
 
     Rectangle {
         id: panel
-        color: "#121212"
+        color: '#dfdfdf'
         height: 32
         anchors.left: parent.left
         anchors.right: parent.right
@@ -68,20 +69,26 @@ Rectangle {
         anchors.right: parent.right
         anchors.rightMargin: 30
         anchors.topMargin: 5
+        spacing: 0
 
         Item {
+            width: 22
+            height: 22
+            
             Image {
                 id: shutdown
-                height: 22
-                width: 22
-                source: "images/system-shutdown.svg"
+                anchors.fill: parent
+                source: Qt.resolvedUrl("images/system-shutdown.svg")
                 fillMode: Image.PreserveAspectFit
+                sourceSize: Qt.size(22, 22)
+                cache: false
+                asynchronous: false
 
                 MouseArea {
                     anchors.fill: parent
                     hoverEnabled: true
                     onEntered: {
-                        shutdown.source = "images/system-shutdown-hover.svg"
+                        shutdown.source = Qt.resolvedUrl("images/system-shutdown-hover.svg")
                         var component = Qt.createComponent("components/ShutdownToolTip.qml")
                         if (component.status === Component.Ready) {
                             var tooltip = component.createObject(shutdown)
@@ -91,10 +98,10 @@ Rectangle {
                         }
                     }
                     onExited: {
-                        shutdown.source = "images/system-shutdown.svg"
+                        shutdown.source = Qt.resolvedUrl("images/system-shutdown.svg")
                     }
                     onClicked: {
-                        shutdown.source = "images/system-shutdown-pressed.svg"
+                        shutdown.source = Qt.resolvedUrl("images/system-shutdown-pressed.svg")
                         sddm.powerOff()
                     }
                 }
@@ -107,20 +114,26 @@ Rectangle {
         anchors.right: parent.right
         anchors.rightMargin: 60
         anchors.topMargin: 5
+        spacing: 0
 
         Item {
+            width: 22
+            height: 22
+            
             Image {
                 id: reboot
-                height: 22
-                width: 22
-                source: "images/system-reboot.svg"
+                anchors.fill: parent
+                source: Qt.resolvedUrl("images/system-reboot.svg")
                 fillMode: Image.PreserveAspectFit
+                sourceSize: Qt.size(22, 22)
+                cache: false
+                asynchronous: false
 
                 MouseArea {
                     anchors.fill: parent
                     hoverEnabled: true
                     onEntered: {
-                        reboot.source = "images/system-reboot-hover.svg"
+                        reboot.source = Qt.resolvedUrl("images/system-reboot-hover.svg")
                         var component = Qt.createComponent("components/RebootToolTip.qml")
                         if (component.status === Component.Ready) {
                             var tooltip = component.createObject(reboot)
@@ -130,10 +143,10 @@ Rectangle {
                         }
                     }
                     onExited: {
-                        reboot.source = "images/system-reboot.svg"
+                        reboot.source = Qt.resolvedUrl("images/system-reboot.svg")
                     }
                     onClicked: {
-                        reboot.source = "images/system-reboot-pressed.svg"
+                        reboot.source = Qt.resolvedUrl("images/system-reboot-pressed.svg")
                         sddm.reboot()
                     }
                 }
@@ -144,12 +157,12 @@ Rectangle {
     Row {
         anchors.top: parent.top
         anchors.right: parent.right
-        anchors.rightMargin: 70
+        anchors.rightMargin: 90
         anchors.topMargin: 5
         Text {
             id: timelb
             text: Qt.formatDateTime(new Date(), "HH:mm")
-            color: "#dfdfdf"
+            color: '#000000'
             font.pointSize: 11
         }
     }
@@ -158,6 +171,7 @@ Rectangle {
         id: timetr
         interval: 500
         repeat: true
+        running: true
         onTriggered: {
             timelb.text = Qt.formatDateTime(new Date(), "HH:mm")
         }
@@ -166,11 +180,11 @@ Rectangle {
     Row {
         anchors.top: parent.top
         anchors.right: parent.right
-        anchors.rightMargin: 120
+        anchors.rightMargin: 140
         anchors.topMargin: 4
         Text {
             id: kb
-            color: "#dfdfdf"
+            color: '#000000'
             text: keyboard.layouts[keyboard.currentLayout].shortName
             font.pointSize: 11
         }
@@ -184,7 +198,7 @@ Rectangle {
         Text {
             id: welcome
             text: textConstants.welcomeText.arg(sddm.hostName)
-            color: "#dfdfdf"
+            color: '#000000'
             font.pointSize: 11
         }
     }
@@ -213,34 +227,47 @@ Rectangle {
                 spacing: 10
                 anchors.centerIn: parent
 
-                Image {
-                    id: ava
+                Item {
                     width: 144
                     height: 144
                     anchors.horizontalCenter: parent.horizontalCenter
-                    fillMode: Image.PreserveAspectCrop
-                    layer.enabled: true
-                    layer.effect: MultiEffect {
-                        maskEnabled: true
-                        maskSource: mask
-                        shadowEnabled: true
-                        shadowHorizontalOffset: 0
-                        shadowVerticalOffset: 3
-                        shadowBlur: 0.45
-                        shadowColor: "#50000000"
-                    }
-                    source: "/var/lib/AccountsService/icons/" + user.currentText
-                    onStatusChanged: {
-                        if (status == Image.Error)
-                            return source = "images/.face.icon"
-                    }
-
+                    
+                    // Shadow layer - offset downward
                     Rectangle {
-                        id: mask
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.top: parent.top
+                        anchors.topMargin: 3
                         width: parent.width
                         height: parent.height
-                        radius: 20
-                        visible: false
+                        radius: 72
+                        color: "#50000000"
+                    }
+                    
+                    // Rounded avatar with clipping
+                    Rectangle {
+                        id: avatarContainer
+                        anchors.fill: parent
+                        radius: 72
+                        color: "#2d2d2d"
+                        clip: true
+                        
+                        Image {
+                            id: ava
+                            anchors.fill: parent
+                            fillMode: Image.PreserveAspectCrop
+                            cache: false
+                            smooth: true
+                            
+                            Component.onCompleted: {
+                                source = "/var/lib/AccountsService/icons/" + user.currentText
+                            }
+                            
+                            onStatusChanged: {
+                                if (status === Image.Error) {
+                                    source = Qt.resolvedUrl("images/.face.icon")
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -305,7 +332,7 @@ Rectangle {
                     placeholderText: textConstants.password
                     onAccepted: sddm.login(user.currentText, password.text, session.currentIndex)
                     
-                    Keys.onPressed: {
+                    Keys.onPressed: (event) => {
                         if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
                             sddm.login(user.currentText, password.text, session.currentIndex)
                             event.accepted = true
@@ -332,9 +359,8 @@ Rectangle {
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.rightMargin: 10
                         fillMode: Image.PreserveAspectFit
-                        source: "images/capslock.svg"
-                        sourceSize.width: 24
-                        sourceSize.height: 24
+                        source: Qt.resolvedUrl("images/capslock.svg")
+                        sourceSize: Qt.size(24, 24)
 
                         states: [
                             State {
@@ -361,7 +387,7 @@ Rectangle {
                                     property: "opacity"
                                     from: 0
                                     to: 1
-                                    duration: 5
+                                    duration: 200
                                 }
                             },
                             Transition {
@@ -371,7 +397,7 @@ Rectangle {
                                     property: "opacity"
                                     from: 1
                                     to: 0
-                                    duration: 5
+                                    duration: 200
                                 }
                             }
                         ]
@@ -432,7 +458,7 @@ Rectangle {
                     height: 50
                     width: height * 7
                     anchors.horizontalCenter: parent.horizontalCenter
-                    icon.source: "images/login.svg"
+                    icon.source: Qt.resolvedUrl("images/login.svg")
                     icon.width: 24
                     icon.height: 24
                     text: textConstants.login

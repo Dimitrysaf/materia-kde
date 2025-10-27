@@ -73,7 +73,6 @@ Rectangle {
         Item {
             width: 22
             height: 22
-            
             Image {
                 id: shutdown
                 anchors.fill: parent
@@ -82,27 +81,26 @@ Rectangle {
                 sourceSize: Qt.size(22, 22)
                 cache: false
                 asynchronous: false
-
-                MouseArea {
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    onEntered: {
-                        shutdown.source = Qt.resolvedUrl("images/system-shutdown-hover.svg")
-                        var component = Qt.createComponent("components/ShutdownToolTip.qml")
-                        if (component.status === Component.Ready) {
-                            var tooltip = component.createObject(shutdown)
-                            tooltip.x = -100
-                            tooltip.y = 40
-                            tooltip.destroy(600)
-                        }
+            }
+            MouseArea {
+                anchors.fill: parent
+                hoverEnabled: true
+                onEntered: {
+                    shutdown.source = Qt.resolvedUrl("images/system-shutdown-hover.svg")
+                    var component = Qt.createComponent("components/ShutdownToolTip.qml")
+                    if (component.status === Component.Ready) {
+                        var tooltip = component.createObject(shutdown.parent)
+                        tooltip.x = shutdown.parent.mapToItem(shutdown.parent.parent, -100, 0).x
+                        tooltip.y = shutdown.parent.mapToItem(shutdown.parent.parent, 0, 40).y
+                        tooltip.destroy(600)
                     }
-                    onExited: {
-                        shutdown.source = Qt.resolvedUrl("images/system-shutdown.svg")
-                    }
-                    onClicked: {
-                        shutdown.source = Qt.resolvedUrl("images/system-shutdown-pressed.svg")
-                        sddm.powerOff()
-                    }
+                }
+                onExited: {
+                    shutdown.source = Qt.resolvedUrl("images/system-shutdown.svg")
+                }
+                onClicked: {
+                    shutdown.source = Qt.resolvedUrl("images/system-shutdown-pressed.svg")
+                    sddm.powerOff()
                 }
             }
         }
@@ -118,7 +116,6 @@ Rectangle {
         Item {
             width: 22
             height: 22
-            
             Image {
                 id: reboot
                 anchors.fill: parent
@@ -127,27 +124,26 @@ Rectangle {
                 sourceSize: Qt.size(22, 22)
                 cache: false
                 asynchronous: false
-
-                MouseArea {
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    onEntered: {
-                        reboot.source = Qt.resolvedUrl("images/system-reboot-hover.svg")
-                        var component = Qt.createComponent("components/RebootToolTip.qml")
-                        if (component.status === Component.Ready) {
-                            var tooltip = component.createObject(reboot)
-                            tooltip.x = -100
-                            tooltip.y = 40
-                            tooltip.destroy(600)
-                        }
+            }
+            MouseArea {
+                anchors.fill: parent
+                hoverEnabled: true
+                onEntered: {
+                    reboot.source = Qt.resolvedUrl("images/system-reboot-hover.svg")
+                    var component = Qt.createComponent("components/RebootToolTip.qml")
+                    if (component.status === Component.Ready) {
+                        var tooltip = component.createObject(reboot.parent)
+                        tooltip.x = reboot.parent.mapToItem(reboot.parent.parent, -100, 0).x
+                        tooltip.y = reboot.parent.mapToItem(reboot.parent.parent, 0, 40).y
+                        tooltip.destroy(600)
                     }
-                    onExited: {
-                        reboot.source = Qt.resolvedUrl("images/system-reboot.svg")
-                    }
-                    onClicked: {
-                        reboot.source = Qt.resolvedUrl("images/system-reboot-pressed.svg")
-                        sddm.reboot()
-                    }
+                }
+                onExited: {
+                    reboot.source = Qt.resolvedUrl("images/system-reboot.svg")
+                }
+                onClicked: {
+                    reboot.source = Qt.resolvedUrl("images/system-reboot-pressed.svg")
+                    sddm.reboot()
                 }
             }
         }

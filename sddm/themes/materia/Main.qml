@@ -73,6 +73,11 @@ Rectangle {
         Item {
             width: 22
             height: 22
+            Rectangle {
+                anchors.fill: parent
+                color: "red"
+                opacity: 0.5
+            }
             Image {
                 id: shutdown
                 anchors.fill: parent

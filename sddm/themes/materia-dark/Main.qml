@@ -159,7 +159,6 @@ Rectangle {
                         radius: avatarContainer.radius
                     }
                     
-                    // Rounded avatar with clipping
                     Rectangle {
                         id: avatarContainer
                         anchors.fill: parent

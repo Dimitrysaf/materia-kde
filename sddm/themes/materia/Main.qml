@@ -141,7 +141,7 @@ Rectangle {
                     height: 144
                     anchors.horizontalCenter: parent.horizontalCenter
                     
-                    RectangularShadow { // Shadow for the avatar
+                    RectangularShadow {
                         anchors.fill: avatarContainer
                         width: avatarContainer.width
                         height: avatarContainer.height
@@ -150,7 +150,6 @@ Rectangle {
                         radius: avatarContainer.radius
                     }
                     
-                    // Rounded avatar with clipping
                     Rectangle {
                         id: avatarContainer
                         anchors.fill: parent
@@ -183,7 +182,7 @@ Rectangle {
                     height: 50
                     anchors.horizontalCenter: parent.horizontalCenter
 
-                    RectangularShadow { // Shadow for the user ComboBox
+                    RectangularShadow { 
                         anchors.fill: user
                         width: user.width
                         height: user.height
@@ -331,7 +330,7 @@ Rectangle {
                     height: 50
                     anchors.horizontalCenter: parent.horizontalCenter
 
-                    RectangularShadow { // Shadow for the session ComboBox
+                    RectangularShadow { 
                         anchors.fill: session
                         width: session.width
                         height: session.height

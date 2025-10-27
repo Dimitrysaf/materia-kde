@@ -66,98 +66,7 @@ Rectangle {
     Row {
         anchors.top: parent.top
         anchors.right: parent.right
-        anchors.rightMargin: 30
-        anchors.topMargin: 5
-        spacing: 0
-
-        Item {
-            width: 22
-            height: 22
-            Rectangle {
-                anchors.fill: parent
-                color: "red"
-                opacity: 0.5
-            }
-            Image {
-                id: shutdown
-                anchors.fill: parent
-                source: Qt.resolvedUrl("images/system-shutdown.svg")
-                fillMode: Image.PreserveAspectFit
-                sourceSize: Qt.size(22, 22)
-                cache: false
-                asynchronous: false
-            }
-            MouseArea {
-                anchors.fill: parent
-                hoverEnabled: true
-                onEntered: {
-                    shutdown.source = Qt.resolvedUrl("images/system-shutdown-hover.svg")
-                    var component = Qt.createComponent("components/ShutdownToolTip.qml")
-                    if (component.status === Component.Ready) {
-                        var tooltip = component.createObject(shutdown.parent)
-                        tooltip.x = shutdown.parent.mapToItem(shutdown.parent.parent, -100, 0).x
-                        tooltip.y = shutdown.parent.mapToItem(shutdown.parent.parent, 0, 40).y
-                        tooltip.destroy(600)
-                    }
-                }
-                onExited: {
-                    shutdown.source = Qt.resolvedUrl("images/system-shutdown.svg")
-                }
-                onClicked: {
-                    shutdown.source = Qt.resolvedUrl("images/system-shutdown-pressed.svg")
-                    sddm.powerOff()
-                }
-            }
-        }
-    }
-
-    Row {
-        anchors.top: parent.top
-        anchors.right: parent.right
-        anchors.rightMargin: 60
-        anchors.topMargin: 5
-        spacing: 0
-
-        Item {
-            width: 22
-            height: 22
-            Image {
-                id: reboot
-                anchors.fill: parent
-                source: Qt.resolvedUrl("images/system-reboot.svg")
-                fillMode: Image.PreserveAspectFit
-                sourceSize: Qt.size(22, 22)
-                cache: false
-                asynchronous: false
-            }
-            MouseArea {
-                anchors.fill: parent
-                hoverEnabled: true
-                onEntered: {
-                    reboot.source = Qt.resolvedUrl("images/system-reboot-hover.svg")
-                    var component = Qt.createComponent("components/RebootToolTip.qml")
-                    if (component.status === Component.Ready) {
-                        var tooltip = component.createObject(reboot.parent)
-                        tooltip.x = reboot.parent.mapToItem(reboot.parent.parent, -100, 0).x
-                        tooltip.y = reboot.parent.mapToItem(reboot.parent.parent, 0, 40).y
-                        tooltip.destroy(600)
-                    }
-                }
-                onExited: {
-                    reboot.source = Qt.resolvedUrl("images/system-reboot.svg")
-                }
-                onClicked: {
-                    reboot.source = Qt.resolvedUrl("images/system-reboot-pressed.svg")
-                    sddm.reboot()
-                }
-            }
-        }
-    }
-
-    Row {
-        anchors.top: parent.top
-        anchors.right: parent.right
-        anchors.rightMargin: 90
+        anchors.rightMargin: 10
         anchors.topMargin: 5
         Text {
             id: timelb
@@ -180,7 +89,7 @@ Rectangle {
     Row {
         anchors.top: parent.top
         anchors.right: parent.right
-        anchors.rightMargin: 140
+        anchors.rightMargin: 60
         anchors.topMargin: 4
         Text {
             id: kb
@@ -486,7 +395,7 @@ Rectangle {
                     height: 50
                     anchors.horizontalCenter: parent.horizontalCenter
 
-                    RectangularShadow { // Shadow for the login Button
+                    RectangularShadow {
                         anchors.fill: login
                         width: login.width
                         height: login.height
@@ -510,6 +419,64 @@ Rectangle {
                         background: Rectangle {
                             color: login.down ? Qt.darker(Material.accentColor, 1.2) : Material.accentColor
                             radius: 2
+                        }
+                    }
+                }  
+                Row {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    spacing: 20
+                    Item {
+                        width: ((shutdownButton.height - 3) * 7) / 2
+                        height: 50
+                        RectangularShadow {
+                            anchors.fill: shutdownButton
+                            width: shutdownButton.width
+                            height: shutdownButton.height
+                            blur: 70
+                            spread: -20
+                            radius: shutdownButton.radius
+                        }
+                        Button {
+                            id: shutdownButton
+                            anchors.fill: parent
+                            icon.source: Qt.resolvedUrl("images/system-shutdown.svg")
+                            icon.width: 24
+                            icon.height: 24
+                            text: qsTr("Shutdown")
+                            font.bold: true
+                            onClicked: sddm.powerOff()
+                            highlighted: true
+                            background: Rectangle {
+                                color: shutdownButton.down ? Qt.darker(Material.accentColor, 1.2) : Material.accentColor
+                                radius: 2
+                            }
+                        }
+                    }
+                    Item {
+                        width: ((rebootButton.height - 3) * 7) / 2
+                        height: 50
+                        RectangularShadow {
+                            anchors.fill: rebootButton
+                            width: rebootButton.width
+                            height: rebootButton.height
+                            blur: 70
+                            spread: -20
+                            radius: rebootButton.radius
+                        }
+                        Button {
+                            id: rebootButton
+                            anchors.fill: parent
+                            icon.source: Qt.resolvedUrl("images/system-reboot.svg")
+                            icon.width: 24
+                            icon.height: 24
+                            text: qsTr("Reboot")
+                            font.bold: true
+                            onClicked: sddm.reboot()
+                            highlighted: true
+                            background: Rectangle {
+                                color: rebootButton.down ? Qt.darker(Material.accentColor, 1.2) : Material.accentColor
+                                radius: 2
+                            }
                         }
                     }
                 }

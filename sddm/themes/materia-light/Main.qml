@@ -54,14 +54,13 @@ Rectangle {
         anchors.top: parent.top
     }
 
-    MultiEffect {
-        source: panel
+    RectangularShadow {
         anchors.fill: panel
-        shadowEnabled: true
-        shadowHorizontalOffset: 0
-        shadowVerticalOffset: 3
-        shadowBlur: 0.4
-        shadowColor: "#70000000"
+        width: panel.width
+        height: panel.height
+        blur: 70
+        spread: -20
+        radius: panel.radius
     }
 
     Row {
@@ -232,15 +231,13 @@ Rectangle {
                     height: 144
                     anchors.horizontalCenter: parent.horizontalCenter
                     
-                    // Shadow layer - offset downward
-                    Rectangle {
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.top: parent.top
-                        anchors.topMargin: 3
-                        width: parent.width
-                        height: parent.height
-                        radius: 72
-                        color: "#50000000"
+                    RectangularShadow { // Shadow for the avatar
+                        anchors.fill: avatarContainer
+                        width: avatarContainer.width
+                        height: avatarContainer.height
+                        blur: 70
+                        spread: -20
+                        radius: avatarContainer.radius
                     }
                     
                     // Rounded avatar with clipping
@@ -271,54 +268,69 @@ Rectangle {
                     }
                 }
 
-                ComboBox {
-                    id: user
+                Item {
+                    width: 350
                     height: 50
-                    width: height * 7
                     anchors.horizontalCenter: parent.horizontalCenter
-                    model: userModel
-                    textRole: "name"
-                    currentIndex: userModel.lastIndex
 
-                    delegate: MenuItem {
-                        Material.theme: Material.Light
-                        Material.accent: "#1a73e8"
-                        width: ulistview.width
-                        text: user.textRole ? (Array.isArray(user.model) ? modelData[user.textRole] : model[user.textRole]) : modelData
-                        Material.foreground: user.currentIndex === index ? ulistview.contentItem.Material.accent : ulistview.contentItem.Material.foreground
-                        highlighted: user.highlightedIndex === index
-                        hoverEnabled: user.hoverEnabled
-                        onClicked: {
-                            user.currentIndex = index
-                            ulistview.currentIndex = index
-                            user.popup.close()
-                            ava.source = ""
-                            ava.source = "/var/lib/AccountsService/icons/" + user.currentText
-                        }
+                    RectangularShadow { // Shadow for the user ComboBox
+                        anchors.fill: user
+                        width: user.width
+                        height: user.height
+                        blur: 70
+                        spread: -20
+                        radius: avatarContainer.radius
                     }
-                    popup: Popup {
-                        Material.theme: Material.Light
-                        Material.accent: "#1a73e8"
-                        width: parent.width
-                        height: parent.height * parent.count
-                        implicitHeight: ulistview.contentHeight
-                        margins: 0
-                        contentItem: ListView {
-                            id: ulistview
-                            clip: true
-                            anchors.fill: parent
-                            model: user.model
-                            spacing: 0
-                            highlightFollowsCurrentItem: true
-                            currentIndex: user.highlightedIndex
-                            delegate: user.delegate
+
+                    ComboBox {
+                        id: user
+                        height: 50
+                        width: height * 7
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        model: userModel
+                        textRole: "name"
+                        currentIndex: userModel.lastIndex
+
+                        delegate: MenuItem {
+                            Material.theme: Material.Light
+                            Material.accent: "#1a73e8"
+                            width: ulistview.width
+                            text: user.textRole ? (Array.isArray(user.model) ? modelData[user.textRole] : model[user.textRole]) : modelData
+                            Material.foreground: user.currentIndex === index ? ulistview.contentItem.Material.accent : ulistview.contentItem.Material.foreground
+                            highlighted: user.highlightedIndex === index
+                            hoverEnabled: user.hoverEnabled
+                            onClicked: {
+                                user.currentIndex = index
+                                ulistview.currentIndex = index
+                                user.popup.close()
+                                ava.source = ""
+                                ava.source = "/var/lib/AccountsService/icons/" + user.currentText
+                            }
                         }
-                    }
-                    background: Rectangle {
-                        color: Material.dialogColor
-                        border.width: 1
-                        border.color: Material.dividerColor
-                        radius: 2
+                        popup: Popup {
+                            Material.theme: Material.Light
+                            Material.accent: "#1a73e8"
+                            width: parent.width
+                            height: parent.height * parent.count
+                            implicitHeight: ulistview.contentHeight
+                            margins: 0
+                            contentItem: ListView {
+                                id: ulistview
+                                clip: true
+                                anchors.fill: parent
+                                model: user.model
+                                spacing: 0
+                                highlightFollowsCurrentItem: true
+                                currentIndex: user.highlightedIndex
+                                delegate: user.delegate
+                            }
+                        }
+                        background: Rectangle {
+                            color: Material.dialogColor
+                            border.width: 1
+                            border.color: Material.dividerColor
+                            radius: 2
+                        }
                     }
                 }
 
@@ -404,70 +416,100 @@ Rectangle {
                     }
                 }
 
-                ComboBox {
-                    id: session
+                Item {
+                    width: 350
                     height: 50
-                    width: height * 7
                     anchors.horizontalCenter: parent.horizontalCenter
-                    model: sessionModel
-                    textRole: "name"
-                    currentIndex: sessionModel.lastIndex
 
-                    delegate: MenuItem {
-                        Material.theme: Material.Light
-                        Material.accent: "#1a73e8"
-                        width: slistview.width
-                        text: session.textRole ? (Array.isArray(session.model) ? modelData[session.textRole] : model[session.textRole]) : modelData
-                        Material.foreground: session.currentIndex === index ? slistview.contentItem.Material.accent : slistview.contentItem.Material.foreground
-                        highlighted: session.highlightedIndex === index
-                        hoverEnabled: session.hoverEnabled
-                        onClicked: {
-                            session.currentIndex = index
-                            slistview.currentIndex = index
-                            session.popup.close()
-                        }
+                    RectangularShadow { // Shadow for the session ComboBox
+                        anchors.fill: session
+                        width: session.width
+                        height: session.height
+                        blur: 70
+                        spread: -20
+                        radius: avatarContainer.radius
                     }
-                    popup: Popup {
-                        Material.theme: Material.Light
-                        Material.accent: "#1a73e8"
-                        width: parent.width
-                        height: parent.height * parent.count
-                        implicitHeight: slistview.contentHeight
-                        margins: 0
-                        contentItem: ListView {
-                            id: slistview
-                            clip: true
-                            anchors.fill: parent
-                            model: session.model
-                            spacing: 0
-                            highlightFollowsCurrentItem: true
-                            currentIndex: session.highlightedIndex
-                            delegate: session.delegate
+
+                    ComboBox {
+                        id: session
+                        height: 50
+                        width: height * 7
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        model: sessionModel
+                        textRole: "name"
+                        currentIndex: sessionModel.lastIndex
+
+                        delegate: MenuItem {
+                            Material.theme: Material.Light
+                            Material.accent: "#1a73e8"
+                            width: slistview.width
+                            text: session.textRole ? (Array.isArray(session.model) ? modelData[session.textRole] : model[session.textRole]) : modelData
+                            Material.foreground: session.currentIndex === index ? slistview.contentItem.Material.accent : slistview.contentItem.Material.foreground
+                            highlighted: session.highlightedIndex === index
+                            hoverEnabled: session.hoverEnabled
+                            onClicked: {
+                                session.currentIndex = index
+                                slistview.currentIndex = index
+                                session.popup.close()
+                            }
                         }
-                    }
-                    background: Rectangle {
-                        color: Material.dialogColor
-                        border.width: 1
-                        border.color: Material.dividerColor
-                        radius: 2
+                        popup: Popup {
+                            Material.theme: Material.Light
+                            Material.accent: "#1a73e8"
+                            width: parent.width
+                            height: parent.height * parent.count
+                            implicitHeight: slistview.contentHeight
+                            margins: 0
+                            contentItem: ListView {
+                                id: slistview
+                                clip: true
+                                anchors.fill: parent
+                                model: session.model
+                                spacing: 0
+                                highlightFollowsCurrentItem: true
+                                currentIndex: session.highlightedIndex
+                                delegate: session.delegate
+                            }
+                        }
+                        background: Rectangle {
+                            color: Material.dialogColor
+                            border.width: 1
+                            border.color: Material.dividerColor
+                            radius: 2
+                        }
                     }
                 }
 
-                Button {
-                    id: login
+                Item {
+                    width: 350
                     height: 50
-                    width: height * 7
                     anchors.horizontalCenter: parent.horizontalCenter
-                    icon.source: Qt.resolvedUrl("images/login.svg")
-                    icon.width: 24
-                    icon.height: 24
-                    text: textConstants.login
-                    font.bold: true
-                    onClicked: sddm.login(user.currentText, password.text, session.currentIndex)
-                    highlighted: true
-                    background: Rectangle {
-                        color: login.down ? Qt.darker(Material.accentColor, 1.2) : Material.accentColor
-                        radius: 2
+
+                    RectangularShadow { // Shadow for the login Button
+                        anchors.fill: login
+                        width: login.width
+                        height: login.height
+                        blur: 70
+                        spread: -20
+                        radius: login.radius
+                    }
+
+                    Button {
+                        id: login
+                        height: 50
+                        width: height * 7
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        icon.source: Qt.resolvedUrl("images/login.svg")
+                        icon.width: 24
+                        icon.height: 24
+                        text: textConstants.login
+                        font.bold: true
+                        onClicked: sddm.login(user.currentText, password.text, session.currentIndex)
+                        highlighted: true
+                        background: Rectangle {
+                            color: login.down ? Qt.darker(Material.accentColor, 1.2) : Material.accentColor
+                            radius: 2
+                        }
                     }
                 }
             }

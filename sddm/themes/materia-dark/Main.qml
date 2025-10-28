@@ -117,15 +117,6 @@ Rectangle {
         width: dialog.width
         height: dialog.height
 
-        RectangularShadow {
-            anchors.fill: dialog
-            width: dialog.width
-            height: dialog.height
-            blur: 70
-            spread: -20
-            radius: dialog.radius
-        }
-
         Dialog {
             id: dialog
             closePolicy: Popup.NoAutoClose
@@ -136,6 +127,14 @@ Rectangle {
             background: Rectangle {
                 color: Material.dialogColor
                 radius: 2
+                layer.enabled: true
+                layer.effect: MultiEffect {
+                    shadowEnabled: true
+                    shadowBlur: 1.0
+                    shadowVerticalOffset: 8
+                    shadowHorizontalOffset: 0
+                    shadowColor: "#80000000"
+                }
             }
             Overlay.modal: Rectangle {
                 color: "transparent"
@@ -150,21 +149,20 @@ Rectangle {
                     height: 144
                     anchors.horizontalCenter: parent.horizontalCenter
                     
-                    RectangularShadow {
-                        anchors.fill: avatarContainer
-                        width: avatarContainer.width
-                        height: avatarContainer.height
-                        blur: 70
-                        spread: -20
-                        radius: avatarContainer.radius
-                    }
-                    
                     Rectangle {
                         id: avatarContainer
                         anchors.fill: parent
                         radius: 72
                         color: "#2d2d2d"
                         clip: true
+                        layer.enabled: true
+                        layer.effect: MultiEffect {
+                            shadowEnabled: true
+                            shadowBlur: 0.6
+                            shadowVerticalOffset: 4
+                            shadowHorizontalOffset: 0
+                            shadowColor: "#60000000"
+                        }
                         
                         Image {
                             id: ava
@@ -188,26 +186,19 @@ Rectangle {
 
                 Item {
                     width: 350
-                    height: 50
+                    height: 44
                     anchors.horizontalCenter: parent.horizontalCenter
-
-                    RectangularShadow {
-                        anchors.fill: user
-                        width: user.width
-                        height: user.height
-                        blur: 70
-                        spread: -20
-                        radius: avatarContainer.radius
-                    }
 
                     ComboBox {
                         id: user
-                        height: 50
-                        width: height * 7
+                        height: 44
+                        width: 350
                         anchors.horizontalCenter: parent.horizontalCenter
                         model: userModel
                         textRole: "name"
                         currentIndex: userModel.lastIndex
+                        Material.theme: Material.Dark
+                        Material.accent: "#8ab4f8"
 
                         delegate: MenuItem {
                             Material.theme: Material.Dark
@@ -232,6 +223,20 @@ Rectangle {
                             height: parent.height * parent.count
                             implicitHeight: ulistview.contentHeight
                             margins: 0
+                            background: Rectangle {
+                                color: Material.dialogColor
+                                border.width: 1
+                                border.color: Material.dividerColor
+                                radius: 2
+                                layer.enabled: true
+                                layer.effect: MultiEffect {
+                                    shadowEnabled: true
+                                    shadowBlur: 0.6
+                                    shadowVerticalOffset: 4
+                                    shadowHorizontalOffset: 0
+                                    shadowColor: "#60000000"
+                                }
+                            }
                             contentItem: ListView {
                                 id: ulistview
                                 clip: true
@@ -243,12 +248,38 @@ Rectangle {
                                 delegate: user.delegate
                             }
                         }
-                        background: Rectangle {
-                            color: Material.dialogColor
-                            border.width: 1
-                            border.color: Material.dividerColor
-                            radius: 2
+                    }
+                }
+
+                TextField {
+                    id: password
+                    height: 44
+                    width: 350
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    echoMode: TextInput.Password
+                    focus: true
+                    placeholderText: textConstants.password
+                    Material.theme: Material.Dark
+                    Material.accent: "#8ab4f8"
+                    onAccepted: sddm.login(user.currentText, password.text, session.currentIndex)
+                    
+                    Keys.onPressed: (event) => {
+                        if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+                            sddm.login(user.currentText, password.text, session.currentIndex)
+                            event.accepted = true
                         }
+                    }
+                    Image {
+                        id: caps
+                        width: 24
+                        height: 24
+                        anchors.right: parent.right
+                        anchors.rightMargin: 10
+                        anchors.verticalCenter: parent.verticalCenter
+                        fillMode: Image.PreserveAspectFit
+                        source: Qt.resolvedUrl("images/capslock.svg")
+                        visible: keyboard.capsLock
+                        z: 10
                     }
                 }
 
@@ -256,112 +287,17 @@ Rectangle {
                     width: 350
                     height: 50
                     anchors.horizontalCenter: parent.horizontalCenter
-
-                    TextField {
-                        id: password
-                        height: 50
-                        width: height * 7
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        echoMode: TextInput.Password
-                        focus: true
-                        placeholderText: textConstants.password
-                        onAccepted: sddm.login(user.currentText, password.text, session.currentIndex)
-                        
-                        Keys.onPressed: (event) => {
-                            if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-                                sddm.login(user.currentText, password.text, session.currentIndex)
-                                event.accepted = true
-                            }
-                        }
-                        
-                        background: Rectangle {
-                            color: "transparent"
-                            Rectangle {
-                                width: parent.width
-                                height: 1
-                                anchors.bottom: parent.bottom
-                                color: password.activeFocus ? Material.accentColor : Material.dividerColor
-                            }
-                        }
-                        
-                        Image {
-                            id: caps
-                            width: 24
-                            height: 24
-                            opacity: 0
-                            state: keyboard.capsLock ? "activated" : ""
-                            anchors.right: password.right
-                            anchors.verticalCenter: parent.verticalCenter
-                            anchors.rightMargin: 10
-                            fillMode: Image.PreserveAspectFit
-                            source: Qt.resolvedUrl("images/capslock.svg")
-                            sourceSize: Qt.size(24, 24)
-
-                            states: [
-                                State {
-                                    name: "activated"
-                                    PropertyChanges {
-                                        target: caps
-                                        opacity: 1
-                                    }
-                                },
-                                State {
-                                    name: ""
-                                    PropertyChanges {
-                                        target: caps
-                                        opacity: 0
-                                    }
-                                }
-                            ]
-
-                            transitions: [
-                                Transition {
-                                    to: "activated"
-                                    NumberAnimation {
-                                        target: caps
-                                        property: "opacity"
-                                        from: 0
-                                        to: 1
-                                        duration: 200
-                                    }
-                                },
-                                Transition {
-                                    to: ""
-                                    NumberAnimation {
-                                        target: caps
-                                        property: "opacity"
-                                        from: 1
-                                        to: 0
-                                        duration: 200
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                }
-
-                Item {
-                    width: 350
-                    height: 50
-                    anchors.horizontalCenter: parent.horizontalCenter
-
-                    RectangularShadow {
-                        anchors.fill: session
-                        width: session.width
-                        height: session.height
-                        blur: 70
-                        spread: -20
-                        radius: avatarContainer.radius
-                    }
 
                     ComboBox {
                         id: session
-                        height: 50
-                        width: height * 7
+                        height: 44
+                        width: 350
                         anchors.horizontalCenter: parent.horizontalCenter
                         model: sessionModel
                         textRole: "name"
                         currentIndex: sessionModel.lastIndex
+                        Material.theme: Material.Dark
+                        Material.accent: "#8ab4f8"
 
                         delegate: MenuItem {
                             Material.theme: Material.Dark
@@ -384,6 +320,20 @@ Rectangle {
                             height: parent.height * parent.count
                             implicitHeight: slistview.contentHeight
                             margins: 0
+                            background: Rectangle {
+                                color: Material.dialogColor
+                                border.width: 1
+                                border.color: Material.dividerColor
+                                radius: 2
+                                layer.enabled: true
+                                layer.effect: MultiEffect {
+                                    shadowEnabled: true
+                                    shadowBlur: 0.6
+                                    shadowVerticalOffset: 4
+                                    shadowHorizontalOffset: 0
+                                    shadowColor: "#60000000"
+                                }
+                            }
                             contentItem: ListView {
                                 id: slistview
                                 clip: true
@@ -395,33 +345,18 @@ Rectangle {
                                 delegate: session.delegate
                             }
                         }
-                        background: Rectangle {
-                            color: Material.dialogColor
-                            border.width: 1
-                            border.color: Material.dividerColor
-                            radius: 2
-                        }
                     }
                 }
 
                 Item {
                     width: 350
-                    height: 50
+                    height: 44
                     anchors.horizontalCenter: parent.horizontalCenter
-
-                    RectangularShadow {
-                        anchors.fill: login
-                        width: login.width
-                        height: login.height
-                        blur: 70
-                        spread: -20
-                        radius: login.radius
-                    }
 
                     Button {
                         id: login
                         height: 50
-                        width: height * 7
+                        width: 350
                         anchors.horizontalCenter: parent.horizontalCenter
                         icon.source: Qt.resolvedUrl("images/login.svg")
                         icon.width: 24
@@ -430,26 +365,28 @@ Rectangle {
                         font.bold: true
                         onClicked: sddm.login(user.currentText, password.text, session.currentIndex)
                         highlighted: true
+                        Material.theme: Material.Dark
+                        Material.accent: "#8ab4f8"
                         background: Rectangle {
                             color: login.down ? Qt.darker(Material.accentColor, 1.2) : Material.accentColor
                             radius: 2
+                            layer.enabled: true
+                            layer.effect: MultiEffect {
+                                shadowEnabled: true
+                                shadowBlur: 0.4
+                                shadowVerticalOffset: 2
+                                shadowHorizontalOffset: 0
+                                shadowColor: "#60000000"
+                            }
                         }
                     }
-                }
+                }  
                 Row {
                     anchors.horizontalCenter: parent.horizontalCenter
                     spacing: 20
                     Item {
                         width: ((shutdownButton.height - 3) * 7) / 2
                         height: 50
-                        RectangularShadow {
-                            anchors.fill: shutdownButton
-                            width: shutdownButton.width
-                            height: shutdownButton.height
-                            blur: 70
-                            spread: -20
-                            radius: shutdownButton.radius
-                        }
                         Button {
                             id: shutdownButton
                             anchors.fill: parent
@@ -460,23 +397,25 @@ Rectangle {
                             font.bold: true
                             onClicked: sddm.powerOff()
                             highlighted: true
+                            Material.theme: Material.Dark
+                            Material.accent: "#8ab4f8"
                             background: Rectangle {
                                 color: shutdownButton.down ? Qt.darker(Material.accentColor, 1.2) : Material.accentColor
                                 radius: 2
+                                layer.enabled: true
+                                layer.effect: MultiEffect {
+                                    shadowEnabled: true
+                                    shadowBlur: 0.4
+                                    shadowVerticalOffset: 2
+                                    shadowHorizontalOffset: 0
+                                    shadowColor: "#60000000"
+                                }
                             }
                         }
                     }
                     Item {
                         width: ((rebootButton.height - 3) * 7) / 2
                         height: 50
-                        RectangularShadow {
-                            anchors.fill: rebootButton
-                            width: rebootButton.width
-                            height: rebootButton.height
-                            blur: 70
-                            spread: -20
-                            radius: rebootButton.radius
-                        }
                         Button {
                             id: rebootButton
                             anchors.fill: parent
@@ -487,9 +426,19 @@ Rectangle {
                             font.bold: true
                             onClicked: sddm.reboot()
                             highlighted: true
+                            Material.theme: Material.Dark
+                            Material.accent: "#8ab4f8"
                             background: Rectangle {
                                 color: rebootButton.down ? Qt.darker(Material.accentColor, 1.2) : Material.accentColor
                                 radius: 2
+                                layer.enabled: true
+                                layer.effect: MultiEffect {
+                                    shadowEnabled: true
+                                    shadowBlur: 0.4
+                                    shadowVerticalOffset: 2
+                                    shadowHorizontalOffset: 0
+                                    shadowColor: "#60000000"
+                                }
                             }
                         }
                     }
